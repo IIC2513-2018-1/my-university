@@ -1,6 +1,6 @@
-# Template
+# My University
 
-Template built with [koa](http://koajs.com/) for IIC2513 - Tecnologías y Aplicaciones Web, Pontificia Universidad Católica de Chile.
+Example project for course template, built with [koa](http://koajs.com/) for IIC2513 - Tecnologías y Aplicaciones Web, Pontificia Universidad Católica de Chile.
 
 ## Prerequisites:
 * [PostgreSQL](https://github.com/IIC2513-2018-1/syllabus/wiki/Getting-Started#postgresql)
