@@ -3,19 +3,21 @@
 
   <head>
     <meta charset="utf-8">
-    <title>IIC2513 - CHANGE-ME</title>
+    <title>IIC2513 - My University</title>
     <% if (env !== 'development') { %>
       <link rel="stylesheet" href="/assets/styles.css">
     <% } %>
   </head>
 
   <body>
-    <header>
-      <h1>My University</h1>
-    </header>
-    <%- body %>
-    <script src="/assets/app.js"></script>
-    <script src="/assets/appReact.js"></script>
+    <div id="container">
+      <header>
+        <h1>My University</h1>
+      </header>
+      <%- body %>
+      <script src="/assets/app.js"></script>
+      <script src="/assets/appReact.js"></script>
+    </div>
   </body>
 
 </html>
