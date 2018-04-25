@@ -57,7 +57,7 @@ router.patch('courses.update', '/:id', loadCourse, async (ctx) => {
     await ctx.render('courses/edit', {
       course,
       errors: validationError.errors,
-      submitCoursePath: ctx.router.url('courses.update'),
+      submitCoursePath: ctx.router.url('courses.update', { id: course.id }),
     });
   }
 });
