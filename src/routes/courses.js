@@ -18,6 +18,8 @@ router.get('courses.list', '/', async (ctx) => {
     editCoursePath: course => ctx.router.url('courses.edit', { id: course.id }),
     deleteCoursePath: course => ctx.router.url('courses.delete', { id: course.id }),
     uploadCoursesPath: ctx.router.url('courses.upload'),
+    studentsCoursePath: course => ctx.router.url('courses.students', { id: course.id }),
+    studentsPath: ctx.router.url('students.list'),
   });
 });
 
@@ -97,6 +99,13 @@ router.post('courses.load', '/upload', async (ctx) => {
     await fileStorage.upload(ctx.request.body.files.list);
   }
   ctx.redirect(ctx.router.url('courses.list'));
+});
+
+router.get('courses.students', '/:id/students', loadCourse, async (ctx) => {
+  await ctx.render('courses/students', {
+    students: await ctx.state.course.getStudents(),
+    coursesListPath: ctx.router.url('courses.list'),
+  });
 });
 
 module.exports = router;
