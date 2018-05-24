@@ -7,7 +7,7 @@ const reactAppContainer = document.getElementById('react-app');
 if (reactAppContainer) {
   const render = function render(Component) {
     ReactDOM.render(
-      <Component />,
+      <Component {...reactAppContainer.dataset} />,
       document.getElementById('react-app'),
     );
   };
