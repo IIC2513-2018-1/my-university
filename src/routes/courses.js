@@ -1,4 +1,7 @@
 const KoaRouter = require('koa-router');
+const parse = require('csv-parse');
+const fs = require('fs');
+const fileStorage = require('../services/file-storage');
 
 const router = new KoaRouter();
 
@@ -14,6 +17,9 @@ router.get('courses.list', '/', async (ctx) => {
     newCoursePath: ctx.router.url('courses.new'),
     editCoursePath: course => ctx.router.url('courses.edit', { id: course.id }),
     deleteCoursePath: course => ctx.router.url('courses.delete', { id: course.id }),
+    uploadCoursesPath: ctx.router.url('courses.upload'),
+    studentsCoursePath: course => ctx.router.url('courses.students', { id: course.id }),
+    studentsPath: ctx.router.url('students.list'),
   });
 });
 
@@ -57,7 +63,7 @@ router.patch('courses.update', '/:id', loadCourse, async (ctx) => {
     await ctx.render('courses/edit', {
       course,
       errors: validationError.errors,
-      submitCoursePath: ctx.router.url('courses.update'),
+      submitCoursePath: ctx.router.url('courses.update', { id: course.id }),
     });
   }
 });
@@ -66,6 +72,40 @@ router.del('courses.delete', '/:id', loadCourse, async (ctx) => {
   const { course } = ctx.state;
   await course.destroy();
   ctx.redirect(ctx.router.url('courses.list'));
+});
+
+router.get('courses.upload', '/upload', async (ctx) => {
+  await ctx.render('courses/upload', {
+    submitCoursesPath: ctx.router.url('courses.load'),
+  });
+});
+
+router.post('courses.load', '/upload', async (ctx) => {
+  // console.log(ctx.request.body.files);
+  const { list } = ctx.request.body.files;
+
+  fs.readFile(list.path, (err, fileData) => {
+    parse(fileData, { columns: true, delimiter: ';' }, (parseErr, rows) => {
+      rows.forEach((row) => {
+        const course = ctx.orm.course.build(row);
+        course.save({ fields: ['code', 'name', 'description'] });
+      });
+    });
+  });
+
+  if (Array.isArray(list)) {
+    list.forEach(f => fileStorage.upload(f));
+  } else {
+    await fileStorage.upload(ctx.request.body.files.list);
+  }
+  ctx.redirect(ctx.router.url('courses.list'));
+});
+
+router.get('courses.students', '/:id/students', loadCourse, async (ctx) => {
+  await ctx.render('courses/students', {
+    students: await ctx.state.course.getStudents(),
+    coursesListPath: ctx.router.url('courses.list'),
+  });
 });
 
 module.exports = router;
